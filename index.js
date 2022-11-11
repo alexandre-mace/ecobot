@@ -18,9 +18,6 @@ await addStreamMatchings(
 const stream = await getStream(bearerClient)
 
 
-console.log(getMatchingAnswer("La France ne correspond qu'à 1% des émissions"))
-
-
 stream.on(ETwitterStreamEvent.Data, async tweet => {
     if (isTweetRetweet(tweet, accountId)) {
         return
