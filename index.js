@@ -1,24 +1,26 @@
 import {ETwitterStreamEvent} from 'twitter-api-v2';
 import {
-    addStreamMatchings,
+    addStreamMatchings, buildStreamRule,
     getBearerClient,
     getOAuthClient,
     getStream, hasReferencedTweet, isTweetRetweet,
     isTweetSelfSent, replyToTweet
 } from "./tweeterApi.js";
-import * as dotenv from 'dotenv'
-dotenv.config()
-import {getAllMatchings, getContentToAnalyze, getMatchingAnswer} from "./domainApi.js";
-import {accountId, accountName, appMode, appModeAuto, appModeManual, testing} from "./config.js";
+import {getContentToAnalyze, getMatchingAnswer} from "./domainApi.js";
+import {accountId, appMode, appModeAuto, testing} from "./config.js";
+import {domainAnswers} from "./domainAnswers.js";
 
 const bearerClient = getBearerClient()
 await addStreamMatchings(
     bearerClient,
-    appMode === appModeManual ? [{value: accountName}] : getAllMatchings().map(matching => ({value: matching})))
+    buildStreamRule(appMode, domainAnswers)
+)
 const stream = await getStream(bearerClient)
 
-
+console.log(buildStreamRule(appMode, domainAnswers))
 stream.on(ETwitterStreamEvent.Data, async tweet => {
+    console.log(tweet)
+
     if (isTweetRetweet(tweet, accountId)) {
         return
     }
@@ -31,6 +33,8 @@ stream.on(ETwitterStreamEvent.Data, async tweet => {
         return
     }
 
+    console.log(tweet)
+
     const oAuthclient = getOAuthClient()
     const contentToAnalyze = await getContentToAnalyze(appMode, tweet, oAuthclient)
     const matchingAnswer = getMatchingAnswer(contentToAnalyze)
@@ -38,6 +42,3 @@ stream.on(ETwitterStreamEvent.Data, async tweet => {
         await replyToTweet(oAuthclient, tweet, matchingAnswer.answer)
     }
 });
-
-
-

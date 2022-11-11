@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 const accountId = process.env.ACCOUNT_ID;
 const accountName = process.env.ACCOUNT_NAME;
 const appMode = process.env.APP_MODE;

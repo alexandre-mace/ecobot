@@ -6,7 +6,7 @@ const getAllMatchings = () => {
     let allMatchings = []
     domainAnswers.forEach(domainAnswer => {
         domainAnswer.matchings.forEach((matching) => {
-            allMatchings.push(matching)
+            matching.values.forEach(matchingValue => allMatchings.push(matchingValue))
         })
     })
 

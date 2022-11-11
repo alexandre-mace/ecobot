@@ -1,4 +1,6 @@
 import {TwitterApi} from "twitter-api-v2";
+import {accountName, appMode, appModeAuto, appModeManual} from "./config.js";
+import {getAllMatchings} from "./domainApi.js";
 
 const getAuthLink = async () => {
     const oAuthclient = new TwitterApi({
@@ -37,6 +39,33 @@ const addStreamMatchings = async (bearerClient, matchings) => {
     await bearerClient.v2.updateStreamRules({
         add: matchings,
     });
+}
+
+const buildStreamRule = (appMode, domainAnswers) => {
+    if (appMode === appModeManual) {
+        return [{value: accountName}]
+    }
+
+    if (appMode === appModeAuto) {
+        let rule = ''
+        domainAnswers.forEach((domainAnswer, i) => {
+            domainAnswer.matchings.forEach((matching, j) => {
+                matching.values.forEach((matchingValue, k) => {
+                    rule+= matchingValue
+                    if (domainAnswer.matchings[k]) {
+                        rule+= ' '
+                    }
+                })
+                if (domainAnswer.matchings[j + 1]) {
+                    rule+= ' OR '
+                }
+            })
+            if (domainAnswer[i + 1]) {
+                rule+= ' OR '
+            }
+        })
+        return [{value: rule}]
+    }
 }
 
 const getStream = async (bearerClient) => {
@@ -78,5 +107,6 @@ export {
     addStreamMatchings,
     hasReferencedTweet,
     getTweet,
-    isTweetSelfSent
+    isTweetSelfSent,
+    buildStreamRule
 }
