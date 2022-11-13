@@ -15,7 +15,7 @@ const domainAnswers = [
                 'shouldBeNotQuoted': true,
                 'values': [
                     'France',
-                    '1 %',
+                    '1 "%"',
                     'émissions',
                 ]
             }

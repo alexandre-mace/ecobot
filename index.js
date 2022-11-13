@@ -17,9 +17,8 @@ await addStreamMatchings(
 )
 const stream = await getStream(bearerClient)
 
-console.log(buildStreamRule(appMode, domainAnswers))
 stream.on(ETwitterStreamEvent.Data, async tweet => {
-    console.log(tweet)
+    console.log(tweet.data.id, tweet.data.text)
 
     if (isTweetRetweet(tweet, accountId)) {
         return
@@ -33,7 +32,7 @@ stream.on(ETwitterStreamEvent.Data, async tweet => {
         return
     }
 
-    console.log(tweet)
+    console.log(tweet.data.id, tweet.data.text)
 
     const oAuthclient = getOAuthClient()
     const contentToAnalyze = await getContentToAnalyze(appMode, tweet, oAuthclient)

@@ -68,6 +68,29 @@ const buildStreamRule = (appMode, domainAnswers) => {
     }
 }
 
+const buildStreamRules = (appMode, domainAnswers) => {
+    if (appMode === appModeManual) {
+        return [{value: accountName}]
+    }
+
+    let rules = []
+    if (appMode === appModeAuto) {
+        domainAnswers.forEach((domainAnswer, i) => {
+            domainAnswer.matchings.forEach((matching, j) => {
+                let rule = ''
+                matching.values.forEach((matchingValue, k) => {
+                    rule+= matchingValue
+                    // if (domainAnswer.matchings[k - 1]) {
+                        rule+= ' '
+                    // }
+                })
+               rules.push({value: rule})
+            })
+        })
+        return rules
+    }
+}
+
 const getStream = async (bearerClient) => {
     const stream = await bearerClient.v2.searchStream({
         'tweet.fields': ['referenced_tweets', 'author_id'],
@@ -108,5 +131,6 @@ export {
     hasReferencedTweet,
     getTweet,
     isTweetSelfSent,
-    buildStreamRule
+    buildStreamRule,
+    buildStreamRules
 }
