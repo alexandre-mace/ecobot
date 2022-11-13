@@ -1,7 +1,7 @@
 {
   "name": "ecobot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Anti climatoscepticism bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
